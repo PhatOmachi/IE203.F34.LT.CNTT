@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_FPTShop_IT_Clean" targetNamespace="http://fptshop.vn/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <process id="FPTShop_ITSupport_Clean" name="Quy trình hỗ trợ Công nghệ thông tin tại FPT Shop" isExecutable="false">
+    <laneSet id="LaneSet_Clean">
+      <lane id="Lane_Manager" name="Quản lý IT">
+        <flowNodeRef>Approve</flowNodeRef>
+        <flowNodeRef>Escalate</flowNodeRef>
+        <flowNodeRef>Fix</flowNodeRef>
+      </lane>
+      <lane id="Lane_Tech" name="Kỹ thuật viên IT">
+        <flowNodeRef>Diagnose</flowNodeRef>
+        <flowNodeRef>RequestAccess</flowNodeRef>
+        <flowNodeRef>G4</flowNodeRef>
+        <flowNodeRef>G5</flowNodeRef>
+        <flowNodeRef>G6</flowNodeRef>
+        <flowNodeRef>Test</flowNodeRef>
+        <flowNodeRef>Replace</flowNodeRef>
+      </lane>
+      <lane id="Lane_Helpdesk" name="IT Helpdesk">
+        <flowNodeRef>Assign</flowNodeRef>
+        <flowNodeRef>Urgent</flowNodeRef>
+        <flowNodeRef>Classify</flowNodeRef>
+        <flowNodeRef>Receive</flowNodeRef>
+        <flowNodeRef>Close</flowNodeRef>
+        <flowNodeRef>Reopen</flowNodeRef>
+        <flowNodeRef>G3</flowNodeRef>
+        <flowNodeRef>G2</flowNodeRef>
+        <flowNodeRef>G7</flowNodeRef>
+        <flowNodeRef>Remote</flowNodeRef>
+      </lane>
+      <lane id="Lane_Employee" name="Nhân viên / Cửa hàng">
+        <flowNodeRef>Confirm</flowNodeRef>
+        <flowNodeRef>End</flowNodeRef>
+        <flowNodeRef>G8</flowNodeRef>
+        <flowNodeRef>Supplement</flowNodeRef>
+        <flowNodeRef>G1</flowNodeRef>
+        <flowNodeRef>Report</flowNodeRef>
+        <flowNodeRef>Start</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="Start" name="Phát sinh sự cố / yêu cầu CNTT" />
+    <task id="Report" name="Gửi yêu cầu hỗ trợ CNTT" />
+    <exclusiveGateway id="G1" name="Yêu cầu hợp lệ?" />
+    <task id="Supplement" name="Bổ sung thông tin" />
+    <task id="Confirm" name="Xác nhận kết quả hỗ trợ" />
+    <exclusiveGateway id="G8" name="Người dùng xác nhận?" />
+    <endEvent id="End" name="Kết thúc quy trình" />
+    <task id="Receive" name="Tiếp nhận và tạo phiếu" />
+    <task id="Classify" name="Phân loại sự cố / yêu cầu" />
+    <exclusiveGateway id="G2" name="Mức độ ưu tiên?" />
+    <task id="Urgent" name="Ưu tiên xử lý khẩn" />
+    <exclusiveGateway id="G3" name="Có thể xử lý từ xa?" />
+    <task id="Remote" name="Hỗ trợ và xử lý từ xa" />
+    <task id="Assign" name="Phân công kỹ thuật viên" />
+    <exclusiveGateway id="G7" name="Cần nâng cấp xử lý?" />
+    <task id="Reopen" name="Mở lại / tiếp tục xử lý phiếu" />
+    <task id="Close" name="Cập nhật kết quả và đóng phiếu" />
+    <task id="Diagnose" name="Kiểm tra và chẩn đoán" />
+    <exclusiveGateway id="G4" name="Cần quyền truy cập / phê duyệt?" />
+    <task id="RequestAccess" name="Yêu cầu cấp quyền / phê duyệt" />
+    <exclusiveGateway id="G5" name="Cần thay thế thiết bị?" />
+    <task id="Replace" name="Thay thế / sửa thiết bị" />
+    <task id="Fix" name="Khắc phục phần mềm / mạng / cấu hình">
+      <incoming>F19</incoming>
+    </task>
+    <task id="Test" name="Kiểm tra và kiểm thử" />
+    <exclusiveGateway id="G6" name="Đã khắc phục?" />
+    <task id="Escalate" name="Tiếp nhận yêu cầu nâng cấp" />
+    <task id="Approve" name="Phê duyệt phương án xử lý" />
+    <sequenceFlow id="F01" sourceRef="Start" targetRef="Report" />
+    <sequenceFlow id="F02" sourceRef="Report" targetRef="G1" />
+    <sequenceFlow id="F03" name="Không" sourceRef="G1" targetRef="Supplement" />
+    <sequenceFlow id="F04" sourceRef="Supplement" targetRef="Report" />
+    <sequenceFlow id="F05" name="Có" sourceRef="G1" targetRef="Receive" />
+    <sequenceFlow id="F06" sourceRef="Receive" targetRef="Classify" />
+    <sequenceFlow id="F07" sourceRef="Classify" targetRef="G2" />
+    <sequenceFlow id="F08" name="Cao" sourceRef="G2" targetRef="Urgent" />
+    <sequenceFlow id="F09" name="Trung bình / Thấp" sourceRef="G2" targetRef="G3" />
+    <sequenceFlow id="F10" sourceRef="Urgent" targetRef="G3" />
+    <sequenceFlow id="F11" name="Có" sourceRef="G3" targetRef="Remote" />
+    <sequenceFlow id="F12" name="Không" sourceRef="G3" targetRef="Assign" />
+    <sequenceFlow id="F13" sourceRef="Remote" targetRef="Confirm" />
+    <sequenceFlow id="F14" sourceRef="Assign" targetRef="Diagnose" />
+    <sequenceFlow id="F15" sourceRef="Diagnose" targetRef="G4" />
+    <sequenceFlow id="F16" name="Có" sourceRef="G4" targetRef="RequestAccess" />
+    <sequenceFlow id="F17" name="Không" sourceRef="G4" targetRef="G5" />
+    <sequenceFlow id="F19" sourceRef="Approve" targetRef="Fix" />
+    <sequenceFlow id="F20" name="Có" sourceRef="G5" targetRef="Replace" />
+    <sequenceFlow id="F21" name="Không" sourceRef="G5" targetRef="Fix" />
+    <sequenceFlow id="F22" sourceRef="Replace" targetRef="Test" />
+    <sequenceFlow id="F23" sourceRef="Fix" targetRef="Test" />
+    <sequenceFlow id="F24" sourceRef="Test" targetRef="G6" />
+    <sequenceFlow id="F25" name="Có" sourceRef="G6" targetRef="Confirm" />
+    <sequenceFlow id="F26" name="Không" sourceRef="G6" targetRef="G7" />
+    <sequenceFlow id="F27" name="Có" sourceRef="G7" targetRef="Escalate" />
+    <sequenceFlow id="F28" name="Không" sourceRef="G7" targetRef="Reopen" />
+    <sequenceFlow id="F29" sourceRef="Escalate" targetRef="Approve" />
+    <sequenceFlow id="F30" sourceRef="Reopen" targetRef="Diagnose" />
+    <sequenceFlow id="F31" sourceRef="Confirm" targetRef="G8" />
+    <sequenceFlow id="F32" name="Có" sourceRef="G8" targetRef="Close" />
+    <sequenceFlow id="F33" name="Không" sourceRef="G8" targetRef="Reopen" />
+    <sequenceFlow id="F34" sourceRef="Close" targetRef="End" />
+  </process>
+  <bpmndi:BPMNDiagram id="Diagram_Clean">
+    <bpmndi:BPMNPlane id="Plane_Clean" bpmnElement="FPTShop_ITSupport_Clean">
+      <bpmndi:BPMNShape id="Lane_Manager_di" bpmnElement="Lane_Manager" isHorizontal="true">
+        <dc:Bounds x="160" y="620" width="2520" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Tech_di" bpmnElement="Lane_Tech" isHorizontal="true">
+        <dc:Bounds x="160" y="440" width="2520" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Helpdesk_di" bpmnElement="Lane_Helpdesk" isHorizontal="true">
+        <dc:Bounds x="160" y="260" width="2520" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Employee_di" bpmnElement="Lane_Employee" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2520" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_di" bpmnElement="End">
+        <dc:Bounds x="2490" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2464" y="128" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Assign_di" bpmnElement="Assign">
+        <dc:Bounds x="1290" y="360" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Urgent_di" bpmnElement="Urgent">
+        <dc:Bounds x="1015" y="270" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G3_di" bpmnElement="G3" isMarkerVisible="true">
+        <dc:Bounds x="1200" y="335" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1143.5" y="376.5" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G2_di" bpmnElement="G2" isMarkerVisible="true">
+        <dc:Bounds x="920" y="335" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="904" y="392" width="81" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Classify_di" bpmnElement="Classify">
+        <dc:Bounds x="750" y="320" width="135" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Receive_di" bpmnElement="Receive">
+        <dc:Bounds x="585" y="320" width="135" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Confirm_di" bpmnElement="Confirm">
+        <dc:Bounds x="1817" y="130" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G8_di" bpmnElement="G8" isMarkerVisible="true">
+        <dc:Bounds x="2115" y="145" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2100" y="112.5" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Close_di" bpmnElement="Close">
+        <dc:Bounds x="2227" y="280" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G7_di" bpmnElement="G7" isMarkerVisible="true">
+        <dc:Bounds x="2535" y="305" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2587" y="296" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reopen_di" bpmnElement="Reopen">
+        <dc:Bounds x="2067" y="350" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Diagnose_di" bpmnElement="Diagnose">
+        <dc:Bounds x="1437" y="470" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G4_di" bpmnElement="G4" isMarkerVisible="true">
+        <dc:Bounds x="1625" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1609" y="453.5" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="RequestAccess_di" bpmnElement="RequestAccess">
+        <dc:Bounds x="1715" y="470" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G5_di" bpmnElement="G5" isMarkerVisible="true">
+        <dc:Bounds x="1895" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1889" y="454" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Replace_di" bpmnElement="Replace">
+        <dc:Bounds x="1997" y="470" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Approve_di" bpmnElement="Approve">
+        <dc:Bounds x="2415" y="700" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Escalate_di" bpmnElement="Escalate">
+        <dc:Bounds x="2215" y="700" width="150" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G6_di" bpmnElement="G6" isMarkerVisible="true">
+        <dc:Bounds x="2425" y="485" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2413" y="542" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Test_di" bpmnElement="Test">
+        <dc:Bounds x="2227" y="470" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Fix_di" bpmnElement="Fix">
+        <dc:Bounds x="2010" y="640" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Remote_di" bpmnElement="Remote">
+        <dc:Bounds x="1290" y="270" width="145" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Supplement_di" bpmnElement="Supplement">
+        <dc:Bounds x="577" y="150" width="125" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G1_di" bpmnElement="G1" isMarkerVisible="true">
+        <dc:Bounds x="435" y="155" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="486" y="166" width="48" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Report_di" bpmnElement="Report">
+        <dc:Bounds x="267" y="140" width="125" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_di" bpmnElement="Start">
+        <dc:Bounds x="195" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="178" y="202" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="F01_di" bpmnElement="F01">
+        <di:waypoint x="231" y="180" />
+        <di:waypoint x="267" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F04_di" bpmnElement="F04">
+        <di:waypoint x="639" y="150" />
+        <di:waypoint x="639" y="95" />
+        <di:waypoint x="327" y="95" />
+        <di:waypoint x="327" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F02_di" bpmnElement="F02">
+        <di:waypoint x="392" y="180" />
+        <di:waypoint x="435" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F03_di" bpmnElement="F03">
+        <di:waypoint x="460" y="155" />
+        <di:waypoint x="460" y="120" />
+        <di:waypoint x="622" y="120" />
+        <di:waypoint x="622" y="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="530" y="102" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F05_di" bpmnElement="F05">
+        <di:waypoint x="460" y="205" />
+        <di:waypoint x="460" y="360" />
+        <di:waypoint x="585" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="512" y="337" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F34_di" bpmnElement="F34">
+        <di:waypoint x="2372" y="300" />
+        <di:waypoint x="2508" y="300" />
+        <di:waypoint x="2508" y="188" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F11_di" bpmnElement="F11">
+        <di:waypoint x="1250" y="360" />
+        <di:waypoint x="1270" y="360" />
+        <di:waypoint x="1270" y="310" />
+        <di:waypoint x="1290" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1251" y="342" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F13_di" bpmnElement="F13">
+        <di:waypoint x="1436" y="310" />
+        <di:waypoint x="1626" y="310" />
+        <di:waypoint x="1626" y="170" />
+        <di:waypoint x="1817" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F12_di" bpmnElement="F12">
+        <di:waypoint x="1225" y="385" />
+        <di:waypoint x="1225" y="410" />
+        <di:waypoint x="1290" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1234" y="392" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F14_di" bpmnElement="F14">
+        <di:waypoint x="1435" y="400" />
+        <di:waypoint x="1487" y="400" />
+        <di:waypoint x="1487" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F22_di" bpmnElement="F22">
+        <di:waypoint x="2142" y="510" />
+        <di:waypoint x="2227" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F23_di" bpmnElement="F23">
+        <di:waypoint x="2155" y="690" />
+        <di:waypoint x="2300" y="690" />
+        <di:waypoint x="2300" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F24_di" bpmnElement="F24">
+        <di:waypoint x="2372" y="510" />
+        <di:waypoint x="2425" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F25_di" bpmnElement="F25">
+        <di:waypoint x="2450" y="485" />
+        <di:waypoint x="2450" y="100" />
+        <di:waypoint x="1907" y="100" />
+        <di:waypoint x="1907" y="130" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2458" y="282" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F26_di" bpmnElement="F26">
+        <di:waypoint x="2450" y="485" />
+        <di:waypoint x="2450" y="330" />
+        <di:waypoint x="2535" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2414" y="353" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F08_di" bpmnElement="F08">
+        <di:waypoint x="945" y="335" />
+        <di:waypoint x="945" y="300" />
+        <di:waypoint x="1015" y="300" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="969" y="283" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F10_di" bpmnElement="F10">
+        <di:waypoint x="1160" y="311" />
+        <di:waypoint x="1225" y="311" />
+        <di:waypoint x="1225" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F09_di" bpmnElement="F09">
+        <di:waypoint x="970" y="360" />
+        <di:waypoint x="1200" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1042" y="334" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F07_di" bpmnElement="F07">
+        <di:waypoint x="885" y="360" />
+        <di:waypoint x="920" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F06_di" bpmnElement="F06">
+        <di:waypoint x="720" y="360" />
+        <di:waypoint x="750" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F31_di" bpmnElement="F31">
+        <di:waypoint x="1962" y="170" />
+        <di:waypoint x="2115" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F32_di" bpmnElement="F32">
+        <di:waypoint x="2165" y="170" />
+        <di:waypoint x="2290" y="170" />
+        <di:waypoint x="2290" y="280" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2265" y="183" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F33_di" bpmnElement="F33">
+        <di:waypoint x="2140" y="195" />
+        <di:waypoint x="2140" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2149" y="306" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F27_di" bpmnElement="F27">
+        <di:waypoint x="2585" y="330" />
+        <di:waypoint x="2640" y="330" />
+        <di:waypoint x="2637" y="680" />
+        <di:waypoint x="2320" y="680" />
+        <di:waypoint x="2320" y="700" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2637" y="663" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F28_di" bpmnElement="F28">
+        <di:waypoint x="2560" y="355" />
+        <di:waypoint x="2560" y="390" />
+        <di:waypoint x="2212" y="390" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2492" y="372" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F29_di" bpmnElement="F29">
+        <di:waypoint x="2365" y="740" />
+        <di:waypoint x="2415" y="740" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F19_di" bpmnElement="F19">
+        <di:waypoint x="2490" y="700" />
+        <di:waypoint x="2490" y="660" />
+        <di:waypoint x="2155" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F21_di" bpmnElement="F21">
+        <di:waypoint x="1920" y="535" />
+        <di:waypoint x="1920" y="680" />
+        <di:waypoint x="2010" y="680" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1924" y="641" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F30_di" bpmnElement="F30">
+        <di:waypoint x="2160" y="430" />
+        <di:waypoint x="2160" y="600" />
+        <di:waypoint x="1507" y="600" />
+        <di:waypoint x="1507" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F15_di" bpmnElement="F15">
+        <di:waypoint x="1582" y="510" />
+        <di:waypoint x="1625" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F16_di" bpmnElement="F16">
+        <di:waypoint x="1675" y="510" />
+        <di:waypoint x="1715" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1682" y="492" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F17_di" bpmnElement="F17">
+        <di:waypoint x="1650" y="535" />
+        <di:waypoint x="1650" y="580" />
+        <di:waypoint x="1880" y="580" />
+        <di:waypoint x="1908" y="523" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1751" y="563" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F20_di" bpmnElement="F20">
+        <di:waypoint x="1945" y="510" />
+        <di:waypoint x="1997" y="510" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1958" y="495" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
